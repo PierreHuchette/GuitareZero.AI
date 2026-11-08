@@ -179,7 +179,7 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
       <h2 id="ovTitle">Branche et joue</h2>
       <p id="ovText">Choisis un morceau dans la bibliothèque, branche ta guitare ou utilise le micro, puis lance. Touche l'écran ou la barre <kbd>Espace</kbd> pour mettre en pause.</p>
       <div class="row" style="justify-content:center">
-        <button class="primary" id="ovConnect">Brancher la guitare</button>
+        <button class="primary" id="ovConnect">Activer le micro / la guitare</button>
         <button id="ovPlay">Jouer sans guitare</button>
       </div>
     </div>
@@ -266,7 +266,7 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
         <label class="check"><input type="checkbox" id="flip"> Corde grave en haut</label>
       </div>
       <hr class="sep">
-      <div class="row"><button id="connectBtn">Brancher la guitare</button></div>
+      <div class="row"><button id="connectBtn">Activer le micro / la guitare</button></div>
       <div class="grid">
         <div class="field" style="grid-column:1/-1"><label for="source">Ce que tu branches</label><select id="source"><option value="cable">Câble jack sur l'entrée micro</option><option value="acoustic">Micro du téléphone ou du casque · guitare acoustique</option><option value="electric">Micro du téléphone ou du casque · électrique non branchée</option></select></div>
         <div class="field" style="grid-column:1/-1"><label for="device">Entrée audio</label><select id="device"><option value="">Entrée par défaut</option></select></div>
@@ -366,7 +366,46 @@ B|----------------|----------------|----------------|----------------|
 G|----------------|----------------|----------------|----------------|
 D|--------5---3---|--------7---5---|--------5---3---|--------3---0---|
 A|--------5---3---|--------7---5---|--------5---3---|--------3---0---|
-E|0-0-0-0-5---3---|0-0-0-0-7---5---|0-0-0-0-5---3---|0-0-0-0-3---0---|`},
+E|0-0-0-0-5---3---|0-0-0-0-7---5---|0-0-0-0-5---3---|0-0-0-0-3---0---|`},  {id:'b-md1', title:'Mélodeath 1 · Mélodie en Do mineur', bpm:90, cpb:4, tuning:'dropc', tab:`Mélodeath 1 - Mélodie en Do mineur sur la corde de Do (Drop C)
+
+e|----------------|----------------|----------------|----------------|
+B|----------------|----------------|----------------|----------------|
+G|----------------|----------------|----------------|----------------|
+D|0-2-3---7---5-3-|2-------------0-|0-2-3---5---7-5-|3---2---0-------|
+A|----------------|--4-------------|----------------|----------------|
+E|----------------|----------------|----------------|----------------|`},
+  {id:'b-md2', title:'Mélodeath 2 · Pédale et power chords', bpm:100, cpb:4, tuning:'dropc', tab:`Mélodeath 2 - Pédale sur la corde grave et power chords à un doigt (Drop C)
+
+e|----------------|----------------|----------------|----------------|
+B|----------------|----------------|----------------|----------------|
+G|----------------|----------------|----------------|----------------|
+D|--------3-------|--------5---3---|--------3-------|--------7---5---|
+A|--------3-------|--------5---3---|--------3-------|--------7---5---|
+E|0-0-0-0-3---0-0-|0-0-0-0-5---3---|0-0-0-0-3---0-0-|0-0-0-0-7---5---|`},
+  {id:'b-md3', title:'Mélodeath 3 · Deux voix en quartes', bpm:80, cpb:4, tuning:'dropc', tab:`Mélodeath 3 - Mélodie à deux cordes, même case (Drop C)
+
+e|----------------|----------------|----------------|----------------|
+B|----------------|----------------|----------------|----------------|
+G|0---2---3---5---|3---2---0-------|5---7---8---7---|5---3---2-------|
+D|0---2---3---5---|3---2---0-------|5---7---8---7---|5---3---2-------|
+A|----------------|----------------|----------------|----------------|
+E|----------------|----------------|----------------|----------------|`},
+  {id:'b-md4', title:'Mélodeath 4 · Galop phrygien', bpm:70, cpb:8, tuning:'dropc', tab:`Mélodeath 4 - Galop et power chords, couleur phrygienne (Drop C)
+
+e|--------------------------------|--------------------------------|
+B|--------------------------------|--------------------------------|
+G|--------------------------------|--------------------------------|
+D|----------------3---3-3-5---5-5-|----------------1---1-1---------|
+A|----------------3---3-3-5---5-5-|----------------1---1-1---------|
+E|0---0-0-0---0-0-3---3-3-5---5-5-|0---0-0-0---0-0-1---1-1-0-------|`},
+  {id:'b-md5', title:'Mélodeath 5 · Riff complet', bpm:100, cpb:4, tuning:'dropc', tab:`Mélodeath 5 - Chug, power chords et montée mélodique (Drop C)
+
+e|----------------|----------------|----------------|----------------|
+B|----------------|----------------|----------------|----------------|
+G|----------------|----------------|----------------|----------------|
+D|--------3-------|--------5---6---|--------3-------|0-2-3-5-7-5-3-2-|
+A|--------3-------|--------5---6---|--------3-------|----------------|
+E|0-0-0-0-3---0-0-|0-0-0-0-5---6---|0-0-0-0-3---0-0-|----------------|`},
 ];
 const TUNING_SHORT = {standard:'Standard', dropd:'Drop D', halfdown:'-½ ton', dropc:'Drop C'};
 const LIB = {user: [], scores: {}, currentId: null};
@@ -872,7 +911,8 @@ function draw(now){
   g.addColorStop(0,'rgba(255,179,71,0)'); g.addColorStop(.5,'rgba(255,179,71,.22)'); g.addColorStop(1,'rgba(255,179,71,0)');
   cx.fillStyle = g; cx.fillRect(hitX - 14, top - 18, 28, h - top - bot + 36);
   cx.fillStyle = '#ffb347'; cx.fillRect(hitX - 1.5, top - 18, 3, h - top - bot + 36);
-  // notes
+  // notes (masquées sous les noms de cordes)
+  cx.save(); cx.beginPath(); cx.rect(lineFrom, 0, lineTo - lineFrom, h); cx.clip();
   cx.textAlign = 'center'; cx.font = `600 ${gemFont}px "IBM Plex Mono", monospace`;
   for(const ev of G.events){
     const x = X(ev.col);
@@ -897,6 +937,7 @@ function draw(now){
       cx.globalAlpha = 1;
     }
   }
+  cx.restore();
   // attente
   if(S.wait && G.playing && G.pos >= 0){
     const ev = G.events[G.idx];
