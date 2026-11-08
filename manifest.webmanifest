@@ -1,0 +1,17 @@
+{
+  "name": "Guitare Zero",
+  "short_name": "Guitare Zero",
+  "description": "Apprends la guitare avec tes propres tablatures : le jeu écoute ta guitare et vérifie chaque note.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#15120e",
+  "theme_color": "#15120e",
+  "lang": "fr",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
