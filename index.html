@@ -494,6 +494,7 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
         <label class="check"><input type="checkbox" id="octave" checked> Tolérer les octaves</label>
         <label class="check"><input type="checkbox" id="mirror"> Défilement inversé</label>
         <label class="check"><input type="checkbox" id="flip"> Corde grave en haut</label>
+        <label class="check"><input type="checkbox" id="fx" checked> Étoiles et combo</label>
       </div>
       <hr class="sep">
       <div class="row"><button id="connectBtn">Activer le micro / la guitare</button></div>
@@ -656,7 +657,7 @@ const allTabs = () => [...BUILTINS, ...LIB.user];
 const norm = t => t.replace(/\r/g,'').trim();
 
 // ---------- Réglages ----------
-const S = {bpm:90, speed:1, cpb:4, tuning:'standard', zoom:16, tol:150, wait:false, metro:false, loop:false, octave:true, gain:1, gate:-50, lat:60, monitor:false, mirror:false, flip:false, source:'cable', skin:'ampli', view:'jouer', edMode:'visuel', fStyle:'Tous', fLevel:'Tous', tRoot:9, tScale:'pentamin', tPos:0};
+const S = {bpm:90, speed:1, cpb:4, tuning:'standard', zoom:16, tol:150, wait:false, metro:false, loop:false, octave:true, gain:1, gate:-50, lat:60, monitor:false, mirror:false, flip:false, source:'cable', skin:'ampli', fx:true, view:'jouer', edMode:'visuel', fStyle:'Tous', fLevel:'Tous', tRoot:9, tScale:'pentamin', tPos:0};
 function load(){ try{ const s = JSON.parse(localStorage.getItem('tablive-settings')||'null'); if(s) Object.assign(S,s); }catch(e){} }
 function save(){ try{ localStorage.setItem('tablive-settings', JSON.stringify(S)); localStorage.setItem('tablive-tab', $('#tab').value); }catch(e){} }
 load();
@@ -679,7 +680,7 @@ bindRange('tol','tol', v => v+' ms');
 bindRange('gain','gain', v => '×'+Number(v).toFixed(1));
 bindRange('gate','gate', v => v+' dB');
 bindRange('lat','lat', v => v+' ms');
-for(const id of ['wait','metro','loop','octave','monitor','mirror','flip']){
+for(const id of ['wait','metro','loop','octave','monitor','mirror','flip','fx']){
   const el = $('#'+id); el.checked = S[id];
   syncers.push(() => { el.checked = S[id]; });
   el.addEventListener('change', () => { S[id] = el.checked; onSetting(id); save(); });
@@ -771,7 +772,7 @@ function loadTab(){
 }
 function resetRun(full){
   for(const e of G.events){ e.state = 'pending'; e.hitAt = 0; e.grade = ''; }
-  G.pos = -S.cpb*4; G.idx = 0; G.hits = 0; G.misses = 0; G.streak = 0; G.runBest = 0; G.popups = []; G.ended = false;
+  G.pos = -S.cpb*4; G.idx = 0; G.hits = 0; G.misses = 0; G.streak = 0; G.runBest = 0; G.popups = []; G.ended = false; if(typeof SP !== 'undefined'){ SP.list = []; SP.banner = null; }
   if(full){ G.best = 0; G.pass = 1; }
 }
 
@@ -875,6 +876,80 @@ function hit(ev, now, offMs){
   ev.state = 'hit'; ev.hitAt = now; G.hits++; G.streak++; G.best = Math.max(G.best, G.streak); G.runBest = Math.max(G.runBest || 0, G.streak);
   ev.grade = S.wait ? 'OK' : (offMs < 60 ? 'Parfait' : 'Bien');
   G.popups.push({txt: ev.grade, at: now, good: true});
+  celebrate(ev, now);
+}
+
+// ---------- Étoiles et combo ----------
+const SP = {list: [], lay: null, comboAt: -9, banner: null, last: 0};
+const reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const MILESTONES = [10, 25, 50, 75, 100, 150, 200, 300];
+function starBurst(x, y, color, n, power, dir){
+  for(let i = 0; i < n; i++){
+    const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.9 + dir * 0.5, v = (150 + Math.random() * 280) * power;
+    SP.list.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 420, age: 0, life: 0.55 + Math.random() * 0.6, size: (3 + Math.random() * 4) * power, color: Math.random() < 0.3 ? T.fg : color, rot: Math.random() * 6, spin: (Math.random() - 0.5) * 12, trail: 0.05});
+  }
+}
+function starShower(w, h, dir, n){
+  for(let i = 0; i < n; i++){
+    const v = 420 + Math.random() * 380;
+    SP.list.push({x: Math.random() * w * 1.2 - (dir > 0 ? w * 0.2 : 0), y: -10 - Math.random() * h * 0.5, vx: dir * v * 0.75, vy: v * 0.6, g: 0, age: -Math.random() * 0.5, life: 0.9 + Math.random() * 0.5, size: 4 + Math.random() * 4, color: Math.random() < 0.5 ? T.accent : STRING_COLORS[i % 6], rot: Math.random() * 6, spin: 6, trail: 0.16});
+  }
+}
+function celebrate(ev, now){
+  SP.comboAt = now;
+  if(S.fx === false || !SP.lay) return;
+  const L = SP.lay, big = ev.grade === 'Parfait';
+  if(!reduceMotion){
+    const n = Math.min(16, (big ? 7 : 4) + Math.floor(G.streak / 5));
+    for(const nt of ev.notes) starBurst(L.hitX, L.Y(nt.string), STRING_COLORS[nt.string], n, big ? 1.15 : 0.9, L.dir);
+  }
+  if(MILESTONES.includes(G.streak)){
+    SP.banner = {txt: `Combo ×${G.streak} !`, at: now};
+    if(!reduceMotion) starShower(L.w, L.h, L.dir, 26 + Math.min(30, G.streak / 4));
+  }
+  if(SP.list.length > 450) SP.list.splice(0, SP.list.length - 450);
+}
+function starPath(x, y, r, rot){
+  cx.beginPath();
+  for(let i = 0; i < 10; i++){ const a = rot + i * Math.PI / 5, rr2 = i % 2 ? r * 0.45 : r; cx.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2); }
+  cx.closePath();
+}
+function comboColor(now){
+  const k = G.streak;
+  return k >= 50 ? STRING_COLORS[Math.floor(now * 6) % 6] : k >= 25 ? T.ok : k >= 10 ? T.accent : T.fg;
+}
+function drawCombo(now, w, h){
+  if(S.fx === false || G.streak < 3) return;
+  const pulse = Math.max(0, 1 - (now - SP.comboAt) * 4), size = Math.min(h * 0.46, 150) * (1 + (reduceMotion ? 0 : pulse * 0.12));
+  cx.save(); cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  cx.globalAlpha = 0.13 + pulse * 0.2; cx.fillStyle = comboColor(now);
+  cx.font = `${T.dw} ${Math.round(size)}px ${T.display}`; cx.fillText('×' + G.streak, w / 2, h / 2 - size * 0.06);
+  cx.font = `${T.dw} ${Math.round(size * 0.2)}px ${T.display}`; cx.fillText('COMBO', w / 2, h / 2 + size * 0.52);
+  cx.restore();
+}
+function drawStars(now, w, h){
+  const dt = Math.min(0.05, now - (SP.last || now)); SP.last = now;
+  if(SP.list.length){
+    cx.save(); cx.globalCompositeOperation = 'lighter'; cx.lineCap = 'round';
+    SP.list = SP.list.filter(p => p.age < p.life && p.y < h + 40);
+    for(const p of SP.list){
+      p.age += dt; if(p.age < 0) continue;
+      p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.spin * dt;
+      const a = Math.max(0, 1 - p.age / p.life);
+      cx.globalAlpha = a * 0.55; cx.strokeStyle = p.color; cx.lineWidth = p.size * 0.5;
+      cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(p.x - p.vx * p.trail, p.y - p.vy * p.trail); cx.stroke();
+      cx.globalAlpha = a; cx.fillStyle = p.color; starPath(p.x, p.y, p.size * (0.6 + a * 0.6), p.rot); cx.fill();
+    }
+    cx.restore();
+  }
+  const b = SP.banner;
+  if(b && now - b.at < 1.4){
+    const t = (now - b.at) / 1.4, sc = reduceMotion ? 1 : 0.7 + Math.min(1, t * 6) * 0.3;
+    cx.save(); cx.globalAlpha = t < 0.75 ? 1 : (1 - t) * 4; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    cx.font = `${T.dw} ${Math.round(Math.min(64, w * 0.11) * sc)}px ${T.display}`;
+    cx.shadowColor = T.accent; cx.shadowBlur = 24; cx.fillStyle = T.accent; cx.fillText(b.txt.toUpperCase(), w / 2, h * 0.3);
+    cx.restore();
+  }
 }
 function miss(ev, now){ ev.state = 'miss'; ev.hitAt = now; G.misses++; G.streak = 0; }
 function judge(now){
@@ -1200,12 +1275,14 @@ function draw(now){
   const w = cvW, h = cvH;
   cx.clearRect(0,0,w,h);
   drawFx(now, w, h);
+  drawCombo(now, w, h);
   const small = h < 260;
   const top = small ? 22 : 34, bot = small ? 20 : 30, gap = (h - top - bot) / 5, ppc = S.zoom;
   const lead = Math.max(small ? 70 : 90, w * 0.2);
   const hitX = S.mirror ? w - lead : lead;
   const X = col => S.mirror ? hitX - (col - G.pos) * ppc : hitX + (col - G.pos) * ppc;
   const Y = s => top + (S.flip ? 5 - s : s) * gap;
+  SP.lay = {hitX, Y, dir: S.mirror ? 1 : -1, w, h};
   const gemH = Math.max(18, Math.min(26, gap * 0.8)), gemFont = Math.round(gemH * 0.58);
   const tuning = TUNINGS[S.tuning];
   const lineFrom = S.mirror ? 0 : 36, lineTo = S.mirror ? w - 36 : w;
@@ -1224,7 +1301,7 @@ function draw(now){
     cx.fillText(NAMES_EN[tuning[s] % 12], S.mirror ? w - 10 : 10, y);
   }
   // ligne de frappe
-  cx.save(); cx.shadowColor = T.accent; cx.shadowBlur = 18; cx.globalAlpha = .22;
+  cx.save(); cx.shadowColor = T.accent; cx.shadowBlur = 18 + (S.fx === false ? 0 : Math.min(34, G.streak)); cx.globalAlpha = .22 + (S.fx === false ? 0 : Math.min(.3, G.streak * .006));
   cx.fillStyle = T.accent; cx.fillRect(hitX - 8, top - 18, 16, h - top - bot + 36); cx.restore();
   if(T.fx === 'scan' && (now % 2.7) < 0.09){ cx.fillStyle = STRING_COLORS[1]; cx.globalAlpha = .7; cx.fillRect(hitX + 4, top - 18, 2, h - top - bot + 36); cx.fillStyle = STRING_COLORS[2]; cx.fillRect(hitX - 6, top - 18, 2, h - top - bot + 36); cx.globalAlpha = 1; }
   cx.fillStyle = T.accent; cx.fillRect(hitX - 1.5, top - 18, 3, h - top - bot + 36);
@@ -1255,6 +1332,7 @@ function draw(now){
     }
   }
   cx.restore();
+  drawStars(now, w, h);
   // attente
   if(S.wait && G.playing && G.pos >= 0){
     const ev = G.events[G.idx];
