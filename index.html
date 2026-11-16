@@ -192,6 +192,58 @@ td{padding:6px 8px;border-bottom:1px solid var(--panel-2);white-space:nowrap}
 [data-skin="neoretro"] h1 span,[data-skin="neoretro"] .overlay h2{text-shadow:0 0 18px var(--amber)}
 [data-skin="enfer"] h1 span,[data-skin="enfer"] .overlay h2{text-shadow:0 0 14px rgba(255,80,20,.55)}
 
+/* ---------- Onglets, filtres, éditeur, tutoriel ---------- */
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line)}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--muted);font:var(--display-weight) clamp(13px,3.7vw,19px)/1 var(--display);text-transform:var(--display-case);letter-spacing:var(--display-track);padding:12px 6px;white-space:nowrap;clip-path:none;flex:1 0 auto;text-align:center;min-height:44px}
+.tabs button[aria-selected="true"]{color:var(--amber);border-bottom-color:var(--amber)}
+.view{display:flex;flex-direction:column;gap:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chips .lbl{margin-right:4px;min-width:52px}
+.chip{padding:6px 12px;border-radius:999px;font-size:13px;min-height:36px}
+.chip.on{background:var(--amber);color:var(--on-accent);border-color:var(--amber)}
+.filters{display:flex;flex-direction:column;gap:8px}
+.field input[type=text]{background:var(--well);color:var(--fg);border:1px solid var(--line);border-radius:var(--radius);padding:8px;font:14px var(--body);width:100%}
+.saverow select{width:auto;flex:0 1 150px}
+.edwrap{overflow-x:auto;background:var(--well);border:1px solid var(--line);border-radius:var(--radius);padding:8px 10px 12px;--ch:30px;--cw:30px}
+.edrow{display:flex;width:max-content}
+.edlabels{display:grid;grid-template-rows:18px repeat(6,var(--ch));position:sticky;left:-10px;background:var(--well);z-index:2;padding:0 8px 0 2px;font:600 13px var(--mono)}
+.edlabels span{display:flex;align-items:center}
+.edm{display:grid;grid-template-columns:repeat(var(--spm),var(--cw));grid-template-rows:18px repeat(6,var(--ch));border-left:2px solid var(--muted)}
+.edm:last-child{border-right:2px solid var(--muted)}
+.eh{font:10px var(--mono);color:var(--muted);display:flex;align-items:center;justify-content:center}
+.eh.on{background:var(--amber);color:var(--on-accent)}
+.ec{all:unset;box-sizing:border-box;width:var(--cw);height:var(--ch);display:flex;align-items:center;justify-content:center;font:600 13px var(--mono);cursor:pointer;position:relative;color:var(--gem-text);-webkit-tap-highlight-color:transparent}
+.ec::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--sc);opacity:.45}
+.ec.beat{box-shadow:inset 1px 0 0 var(--line)}
+.ec b{position:relative;background:var(--sc);border-radius:4px;min-width:20px;text-align:center;line-height:20px;padding:0 2px}
+.ec.sel{outline:2px solid var(--amber);outline-offset:-2px;background:color-mix(in srgb,var(--amber) 16%,transparent)}
+.ec.r0{--sc:var(--s1)}.ec.r1{--sc:var(--s2)}.ec.r2{--sc:var(--s3)}.ec.r3{--sc:var(--s4)}.ec.r4{--sc:var(--s5)}.ec.r5{--sc:var(--s6)}
+.keypad{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}
+.keypad button{padding:8px 0;min-height:42px;font:600 15px var(--mono);clip-path:none}
+.keypad .ctl{background:var(--panel);color:var(--amber)}
+.inline{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.inline select{width:auto}
+.fbwrap{overflow-x:auto;background:var(--well);border:1px solid var(--line);border-radius:var(--radius);padding:8px}
+.fb{display:block;width:100%;min-width:300px;max-width:620px;height:auto;margin:0 auto}
+.fb .fret{stroke:var(--line);stroke-width:2}
+.fb .nut{stroke:var(--fg);stroke-width:6}
+.fb .win{fill:var(--amber);opacity:.09}
+.fb .inlay{fill:var(--line)}
+.fb text{font:600 13px var(--mono);text-anchor:middle}
+.fb .sname{text-anchor:start}
+.fb .fnum{fill:var(--muted)}
+.fb .fnum.in{fill:var(--amber)}
+.fb .dot circle{fill:var(--panel-2);stroke:var(--fg);stroke-width:2}
+.fb .dot text{fill:var(--fg)}
+.fb .dot.root circle{fill:var(--amber);stroke:var(--amber)}
+.fb .dot.root text{fill:var(--on-accent)}
+.fb .dot.on circle{fill:var(--ok);stroke:var(--ok)}
+.fb .dot.on text{fill:var(--gem-text)}
+.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--muted);max-width:70ch}
+.tips b{color:var(--fg);font-weight:600}
+@media (pointer:coarse){.edwrap{--ch:36px}}
+
 /* Sélecteur de thème */
 .sheet{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center}
 .sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.55)}
@@ -263,6 +315,14 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
     <button id="skinBtn">Thème</button>
   </header>
 
+  <nav class="tabs" id="tabs" aria-label="Sections">
+    <button data-go="jouer" aria-selected="true">Jouer</button>
+    <button data-go="creer" aria-selected="false">Créer</button>
+    <button data-go="tuto" aria-selected="false">Tutoriel</button>
+    <button data-go="reglages" aria-selected="false">Réglages</button>
+  </nav>
+
+  <div class="view" data-view="jouer">
   <div id="game">
   <div class="stage">
     <canvas id="cv"></canvas>
@@ -309,6 +369,10 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
         <input type="file" id="importFile" accept=".json,application/json" hidden>
       </div>
     </div>
+    <div class="filters">
+      <div class="chips" id="styleChips"></div>
+      <div class="chips" id="levelChips"></div>
+    </div>
     <div class="lib" id="lib"></div>
     <div class="note" id="libInfo"></div>
     <div id="diffBox"></div>
@@ -317,12 +381,51 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
       <div class="histwrap"><table><thead><tr><th>Date</th><th>Précision</th><th>Notes</th><th>Série</th><th>Tempo</th><th>Mode</th></tr></thead><tbody id="hist"></tbody></table></div>
     </div>
   </section>
+  </div>
 
-  <div class="rack">
-    <section class="panel">
-      <h3>Ta tablature</h3>
+  <div class="view" data-view="creer" hidden>
+    <div class="chips" id="edModes">
+      <button class="chip on" data-mode="visuel" aria-pressed="true">Éditeur visuel</button>
+      <button class="chip" data-mode="texte" aria-pressed="false">Coller du texte</button>
+    </div>
+    <section class="panel" id="edVisual">
+      <h3>Éditeur de tablature</h3>
+      <div class="grid">
+        <div class="field" style="grid-column:1/-1"><label for="edTitle">Nom du morceau</label><input type="text" id="edTitle" placeholder="Mon riff"></div>
+        <div class="field"><label for="edStyle">Style</label><select id="edStyle"></select></div>
+        <div class="field"><label for="edTuning">Accordage</label><select id="edTuning"></select></div>
+        <div class="field"><label for="edBpm">Tempo (BPM)</label><input type="number" id="edBpm" min="40" max="220" value="90"></div>
+        <div class="field"><label for="edCpb">Cases par temps</label>
+          <select id="edCpb"><option value="1">1 · noires</option><option value="2">2 · croches</option><option value="3">3 · triolets</option><option value="4">4 · doubles croches</option><option value="6">6 · sextolets</option><option value="8">8 · triples croches</option><option value="12">12</option><option value="16">16</option></select></div>
+      </div>
+      <div class="edwrap" id="edGrid"></div>
+      <div class="note" id="edInfo"></div>
+      <div class="keypad" id="edPad"></div>
+      <label class="inline" for="edAdv">Après chaque note, avancer de <select id="edAdv"></select></label>
+      <div class="row">
+        <button id="edAdd">+ Mesure</button>
+        <button id="edDup">Dupliquer la dernière</button>
+        <button id="edDel">− Mesure</button>
+        <button id="edClear">Tout effacer</button>
+        <button id="edFromGame">Reprendre le morceau en cours</button>
+      </div>
+      <div class="row">
+        <button id="edListen">▶ Écouter</button>
+        <button class="primary" id="edPlay">Jouer ce morceau</button>
+        <button id="edSave">Enregistrer dans la bibliothèque</button>
+      </div>
+      <div class="note" id="edMsg"></div>
+      <details>
+        <summary>Comment ça marche ?</summary>
+        <p>Touche une case de la grille, puis un numéro de frette sur le pavé : la note se pose sur la corde choisie. Chaque colonne est un instant du morceau, les traits épais séparent les mesures et les points marquent les temps.</p>
+        <p>Au clavier : les flèches déplacent la case, les chiffres posent la note (tape vite deux chiffres pour 10 à 24), Retour arrière efface, Entrée saute au temps suivant.</p>
+      </details>
+    </section>
+    <section class="panel" id="edTextPanel" hidden>
+      <h3>Coller une tablature texte</h3>
       <div class="saverow">
         <input type="text" id="saveTitle" placeholder="Nom du morceau" aria-label="Nom du morceau">
+        <select id="saveStyle" aria-label="Style"></select>
         <button id="saveBtn">Enregistrer dans la bibliothèque</button>
       </div>
       <textarea id="tab" spellcheck="false" aria-label="Tablature"></textarea>
@@ -336,14 +439,47 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
         <p>Le format texte classique des sites de tablatures : 6 lignes de la corde aiguë (e) à la grave (E), avec des tirets. Les cases à deux chiffres (10, 12…) sont reconnues, les blocs de 6 lignes s'enchaînent, le texte autour est ignoré. Le rythme vient de l'espacement : règle « tirets par temps » pour que ça colle au morceau.</p>
       </details>
     </section>
+  </div>
 
+  <div class="view" data-view="tuto" hidden>
+    <section class="panel">
+      <h3>Gammes et positions</h3>
+      <div class="grid">
+        <div class="field"><label for="tRoot">Tonique</label><select id="tRoot"></select></div>
+        <div class="field"><label for="tScale">Gamme</label><select id="tScale"></select></div>
+      </div>
+      <div class="chips" id="tPos"></div>
+      <div class="note" id="tDesc"></div>
+      <div class="fbwrap" id="tBoard"></div>
+      <div class="note">Dans les ronds : le doigt à utiliser. 1 = index, 2 = majeur, 3 = annulaire, 4 = auriculaire, 0 = corde à vide.</div>
+      <div class="note" id="tHand" style="color:var(--fg)"></div>
+      <div class="row">
+        <button id="tListen">▶ Écouter la gamme</button>
+        <button class="primary" id="tTrain">S'entraîner sur cette position</button>
+      </div>
+    </section>
+    <section class="panel">
+      <h3>Placer ses mains</h3>
+      <ul class="tips">
+        <li><b>Pouce gauche</b> derrière le manche, à peu près en face du majeur. Il sert d'appui, il ne serre pas.</li>
+        <li><b>Un doigt par case</b> : la main ne bouge pas, ce sont les doigts qui vont chercher les notes de la position.</li>
+        <li><b>Appuie juste derrière la frette</b>, avec le bout du doigt, les doigts arrondis. Plus près de la frette, moins il faut de force.</li>
+        <li><b>Garde les doigts près des cordes</b> quand ils ne jouent pas : ils arrivent plus vite sur la note suivante.</li>
+        <li><b>Main droite</b> : tranche de la main posée près du chevalet, médiator tenu entre le pouce et l'index, petits mouvements du poignet.</li>
+        <li><b>Aller-retour</b> : un coup vers le bas, un coup vers le haut, même à tempo lent. C'est ce qui permettra d'accélérer.</li>
+        <li><b>Lentement et juste d'abord</b> : monte le tempo seulement quand chaque note sonne clairement.</li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="view" data-view="reglages" hidden>
     <section class="panel">
       <h3>Réglages</h3>
       <div class="grid">
         <div class="field"><label for="bpm">Tempo <output id="bpmOut">90 BPM</output></label><input type="range" id="bpm" min="40" max="220" value="90"></div>
         <div class="field"><label for="speed">Vitesse <output id="speedOut">100 %</output></label><input type="range" id="speed" min="25" max="150" step="5" value="100"></div>
         <div class="field"><label for="cpb">Tirets par temps</label>
-          <select id="cpb"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="6">6</option><option value="8">8</option></select></div>
+          <select id="cpb"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="6">6</option><option value="8">8</option><option value="12">12</option><option value="16">16</option></select></div>
         <div class="field"><label for="tuning">Accordage</label>
           <select id="tuning"><option value="standard">Standard (E A D G B E)</option><option value="dropd">Drop D</option><option value="halfdown">Un demi-ton plus bas</option><option value="dropc">Drop C</option></select></div>
         <div class="field"><label for="zoom">Zoom <output id="zoomOut">16</output></label><input type="range" id="zoom" min="8" max="40" value="16"></div>
@@ -518,7 +654,7 @@ const allTabs = () => [...BUILTINS, ...LIB.user];
 const norm = t => t.replace(/\r/g,'').trim();
 
 // ---------- Réglages ----------
-const S = {bpm:90, speed:1, cpb:4, tuning:'standard', zoom:16, tol:150, wait:false, metro:false, loop:false, octave:true, gain:1, gate:-50, lat:60, monitor:false, mirror:false, flip:false, source:'cable', skin:'ampli'};
+const S = {bpm:90, speed:1, cpb:4, tuning:'standard', zoom:16, tol:150, wait:false, metro:false, loop:false, octave:true, gain:1, gate:-50, lat:60, monitor:false, mirror:false, flip:false, source:'cable', skin:'ampli', view:'jouer', edMode:'visuel', fStyle:'Tous', fLevel:'Tous', tRoot:9, tScale:'pentamin', tPos:0};
 function load(){ try{ const s = JSON.parse(localStorage.getItem('tablive-settings')||'null'); if(s) Object.assign(S,s); }catch(e){} }
 function save(){ try{ localStorage.setItem('tablive-settings', JSON.stringify(S)); localStorage.setItem('tablive-tab', $('#tab').value); }catch(e){} }
 load();
@@ -582,19 +718,20 @@ function parseTab(text){
     ignored += run.length % 6;
     for(let k = 0; k + 6 <= run.length; k += 6){
       const block = run.slice(k, k+6).map(l => splitLabel(l).replace(/\s+$/,''));
-      const width = Math.max(...block.map(b => b.length));
+      const width = Math.max(...block.map(b => b.length - (b.match(/\|/g) || []).length));
       bars.push(offset);
       block.forEach((body, si) => {
+        let nb = 0;
         for(let i = 0; i < body.length; i++){
           const c = body[i];
           if(c >= '0' && c <= '9'){
             let fret = +c, len = 1; const n = body[i+1];
             if((c === '1' || c === '2') && n >= '0' && n <= '9' && +(c+n) <= 24){ fret = +(c+n); len = 2; }
-            const col = offset + i;
+            const col = offset + i - nb;
             if(!cols.has(col)) cols.set(col, []);
             if(!cols.get(col).some(x => x.string === si)) cols.get(col).push({string:si, fret});
             i += len - 1;
-          } else if(c === '|' && si === 0 && i > 0 && i < body.length - 1) bars.push(offset + i);
+          } else if(c === '|'){ if(si === 0 && i > 0 && i < body.length - 1) bars.push(offset + i - nb); nb++; }
         }
       });
       offset += width; blocks++;
@@ -871,16 +1008,28 @@ function recordScore(acc, total){
 function badgeClass(b){ return b == null ? '' : b >= 90 ? 'gold' : b >= 70 ? 'green' : 'red'; }
 const fmtDate = iso => { const d = new Date(iso); return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'}) + ' ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}); };
 function renderLib(){
+  const all = allTabs(); all.forEach(diffOf);
+  let fs = S.fStyle || 'Tous', fl = S.fLevel || 'Tous';
+  const styles = ['Tous', ...STYLES.filter(st => all.some(t => styleOf(t) === st))];
+  if(!styles.includes(fs)) fs = S.fStyle = 'Tous';
+  const cs = {}, cl = {};
+  for(const t of all){
+    const st = styleOf(t), lv = lvlName(t._diff);
+    if(fl === 'Tous' || lv === fl) cs[st] = (cs[st] || 0) + 1;
+    if(fs === 'Tous' || st === fs) cl[lv] = (cl[lv] || 0) + 1;
+  }
+  chipRow($('#styleChips'), 'Style', styles, fs, cs, v => { S.fStyle = v; save(); renderLib(); });
+  chipRow($('#levelChips'), 'Niveau', ['Tous', ...LEVELS_F], fl, cl, v => { S.fLevel = v; save(); renderLib(); });
+  const list = all.filter(t => (fs === 'Tous' || styleOf(t) === fs) && (fl === 'Tous' || lvlName(t._diff) === fl));
   const box = $('#lib'); box.innerHTML = '';
-  for(const t of allTabs()){
+  if(!list.length){ const n = document.createElement('div'); n.className = 'note'; n.textContent = 'Aucun morceau ne correspond à ces filtres.'; box.appendChild(n); }
+  for(const t of list){
     const s = LIB.scores[t.id], card = document.createElement('div');
     card.className = 'card' + (t.id === LIB.currentId ? ' current' : '');
     card.tabIndex = 0; card.setAttribute('role', 'button');
-    const user = t.id.startsWith('u-');
-    if(!t._diff || t._diffKey !== t.tab + t.bpm + t.cpb){ const p = parseTab(t.tab); t._diff = analyzeDifficulty(p, t.bpm, t.cpb); t._diffKey = t.tab + t.bpm + t.cpb; }
-    const dd = t._diff;
-    card.innerHTML = `<div class="tag">${user ? 'Mes tabs' : 'Fournie'}</div><div class="t"></div>
-      <div class="m">${t.bpm} BPM · ${t.cpb} tirets/temps · ${TUNING_SHORT[t.tuning] || t.tuning}</div>
+    const user = t.id.startsWith('u-'), dd = t._diff;
+    card.innerHTML = `<div class="tag">${styleOf(t)}${user ? ' · perso' : ''}</div><div class="t"></div>
+      <div class="m">${t.bpm} BPM · ${TUNING_SHORT[t.tuning] || t.tuning}</div>
       ${dd ? `<div class="m">Difficulté <b class="${dd.level[2]}">${dd.score}/10</b> · ${dd.level[1]}</div>` : ''}
       <div class="foot"><span class="m">${s ? s.plays + ' partie' + (s.plays > 1 ? 's' : '') + (s.last ? ' · ' + new Date(s.last).toLocaleDateString('fr-FR') : '') : 'Jamais jouée'}</span>
       <span class="badge ${badgeClass(s && s.best)}">${s && s.best != null ? s.best + ' %' : '–'}</span></div>`;
@@ -890,7 +1039,7 @@ function renderLib(){
       del.addEventListener('click', e => { e.stopPropagation(); if(confirm(`Supprimer « ${t.title} » et ses scores ?`)){ LIB.user = LIB.user.filter(x => x.id !== t.id); delete LIB.scores[t.id]; if(LIB.currentId === t.id) LIB.currentId = null; saveLib(); renderLib(); } });
       card.querySelector('.foot').prepend(del);
     }
-    const open = () => selectTab(t);
+    const open = () => { selectTab(t); window.scrollTo({top: 0, behavior: 'smooth'}); };
     card.addEventListener('click', open);
     card.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); } });
     box.appendChild(card);
@@ -919,14 +1068,11 @@ function selectTab(t){
   if(loadTab()) showOverlay(t.title, $('#parseInfo').textContent + `. Tempo ${t.bpm} BPM, accordage ${TUNING_SHORT[t.tuning] || t.tuning}.`, 'Jouer');
 }
 $('#saveBtn').addEventListener('click', () => {
-  const title = $('#saveTitle').value.trim(), text = $('#tab').value;
-  const info = $('#libInfo');
-  if(!title){ info.textContent = 'Donne un nom au morceau avant de l\'enregistrer.'; $('#saveTitle').focus(); return; }
-  if(!parseTab(text).events.length){ info.textContent = 'Aucune note trouvée dans la tab : rien à enregistrer.'; return; }
-  let t = LIB.user.find(x => x.title.toLowerCase() === title.toLowerCase());
-  if(t) Object.assign(t, {tab: text, bpm: S.bpm, cpb: S.cpb, tuning: S.tuning});
-  else { t = {id: 'u-' + Date.now().toString(36), title, tab: text, bpm: S.bpm, cpb: S.cpb, tuning: S.tuning}; LIB.user.push(t); }
-  saveLib(); loadTab();
+  const title = $('#saveTitle').value.trim(), text = $('#tab').value, info = $('#parseInfo');
+  if(!title){ info.className = 'note err'; info.textContent = 'Donne un nom au morceau avant de l\'enregistrer.'; $('#saveTitle').focus(); return; }
+  if(!parseTab(text).events.length){ info.className = 'note err'; info.textContent = 'Aucune note trouvée dans la tab : rien à enregistrer.'; return; }
+  saveToLibrary(title, text, {bpm: S.bpm, cpb: S.cpb, tuning: S.tuning, style: $('#saveStyle').value});
+  loadTab(); showView('jouer');
   $('#libInfo').textContent = `« ${title} » enregistré avec ${S.bpm} BPM, ${S.cpb} tirets par temps et l'accordage ${TUNING_SHORT[S.tuning]}.`;
 });
 $('#exportBtn').addEventListener('click', () => {
@@ -947,7 +1093,7 @@ $('#importFile').addEventListener('change', async e => {
     for(const t of d.library){
       if(!t || !t.id || !t.title || typeof t.tab !== 'string') continue;
       const i = LIB.user.findIndex(x => x.id === t.id);
-      const clean = {id: String(t.id), title: String(t.title), tab: t.tab, bpm: +t.bpm || 90, cpb: +t.cpb || 4, tuning: TUNINGS[t.tuning] ? t.tuning : 'standard'};
+      const clean = {id: String(t.id), title: String(t.title), tab: t.tab, bpm: +t.bpm || 90, cpb: +t.cpb || 4, tuning: TUNINGS[t.tuning] ? t.tuning : 'standard', style: typeof t.style === 'string' ? t.style : 'Autre'};
       if(i >= 0) LIB.user[i] = clean; else { LIB.user.push(clean); added++; }
     }
     for(const [id, s] of Object.entries(d.scores)){
@@ -1282,13 +1428,384 @@ $('#source').addEventListener('change', e => {
 });
 
 document.addEventListener('keydown', e => {
-  if(e.code !== 'Space') return;
+  if(e.code !== 'Space' || S.view !== 'jouer') return;
   const t = e.target.tagName;
   if(t === 'TEXTAREA' || t === 'INPUT' || t === 'SELECT' || t === 'BUTTON') return;
   e.preventDefault(); togglePlay();
 });
 
+// ---------- Synthé (écoute dans l'éditeur et le tutoriel) ----------
+const SY = {nodes: [], on: false, raf: 0, end: null, btn: null};
+function stopSynth(){
+  for(const o of SY.nodes){ try { o.stop(); } catch(e){} }
+  SY.nodes = []; cancelAnimationFrame(SY.raf);
+  if(SY.btn) SY.btn.textContent = SY.btn.dataset.label;
+  const end = SY.end; SY.on = false; SY.end = null; SY.btn = null;
+  if(end) end();
+}
+function playSynth(list, dur, onTick, onEnd, btn){
+  stopSynth(); ensureCtx();
+  const ctx = A.ctx, t0 = ctx.currentTime + 0.1;
+  for(const n of list){
+    const t = t0 + n.t, o = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain(), len = 0.7;
+    o.type = 'sawtooth'; o.frequency.value = 440 * Math.pow(2, (n.midi - 69) / 12);
+    f.type = 'lowpass'; f.frequency.setValueAtTime(3200, t); f.frequency.exponentialRampToValueAtTime(450, t + len);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.connect(f); f.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + len + 0.05);
+    SY.nodes.push(o);
+  }
+  SY.on = true; SY.end = onEnd; SY.btn = btn || null;
+  if(btn){ btn.dataset.label = btn.dataset.label || btn.textContent; btn.textContent = '■ Stop'; }
+  const loop = () => {
+    const t = ctx.currentTime - t0;
+    if(t >= dur){ stopSynth(); return; }
+    if(t >= 0 && onTick) onTick(t);
+    SY.raf = requestAnimationFrame(loop);
+  };
+  SY.raf = requestAnimationFrame(loop);
+}
+
+// ---------- Grille <-> tablature texte ----------
+const ckey = (s, c) => s + ',' + c;
+function gridToText(g){
+  const n = g.cpb * 4, total = g.measures * n; let w = 1;
+  for(const k in g.cells){
+    const [s, c] = k.split(',').map(Number);
+    if(c < total && g.cells[k] >= 10 && ((c % n) === n - 1 || g.cells[ckey(s, c + 1)] != null)){ w = 2; break; }
+  }
+  const perLine = Math.max(1, Math.floor(64 / (n * w))), out = [];
+  for(let m0 = 0; m0 < g.measures; m0 += perLine){
+    for(let s = 0; s < 6; s++){
+      let line = 'eBGDAE'[s] + '|';
+      for(let m = m0; m < Math.min(g.measures, m0 + perLine); m++){
+        const ch = new Array(n * w).fill('-');
+        for(let i = 0; i < n; i++){
+          const v = g.cells[ckey(s, m * n + i)];
+          if(v != null){ const str = String(v); ch[i * w] = str[0]; if(str.length > 1) ch[i * w + 1] = str[1]; }
+        }
+        line += ch.join('') + '|';
+      }
+      out.push(line);
+    }
+    out.push('');
+  }
+  return {text: out.join('\n').trim(), cpb: g.cpb * w};
+}
+function textToGrid(text, cpb){
+  const p = parseTab(text), n = cpb * 4, cells = {};
+  const measures = Math.min(32, Math.max(1, Math.ceil(p.total / n)));
+  let cut = 0;
+  for(const ev of p.events){
+    if(ev.col >= measures * n){ cut++; continue; }
+    for(const nt of ev.notes) cells[ckey(nt.string, ev.col)] = nt.fret;
+  }
+  return {cells, measures, cut, count: p.events.length};
+}
+
+// ---------- Bibliothèque : styles et filtres ----------
+const STYLES = ['Rock / Blues', 'Metal', 'Mélodeath', 'Exercice', 'Autre'];
+for(const t of BUILTINS) t.style = t.id.startsWith('b-md') ? 'Mélodeath' : t.id.startsWith('b-metal') ? 'Metal' : 'Rock / Blues';
+const LEVELS_F = ['Facile', 'Débutant', 'Intermédiaire', 'Avancé'];
+const styleOf = t => STYLES.includes(t.style) ? t.style : 'Autre';
+const lvlName = d => !d ? null : d.level[1] === 'Expert' ? 'Avancé' : d.level[1];
+function diffOf(t){
+  const k = t.tab + '|' + t.bpm + '|' + t.cpb;
+  if(t._diffKey !== k){ t._diff = analyzeDifficulty(parseTab(t.tab), t.bpm, t.cpb); t._diffKey = k; }
+  return t._diff;
+}
+function chipRow(box, label, items, cur, counts, onPick){
+  box.innerHTML = ''; const l = document.createElement('span'); l.className = 'lbl'; l.textContent = label; box.appendChild(l);
+  for(const it of items){
+    const b = document.createElement('button');
+    b.className = 'chip' + (it === cur ? ' on' : '');
+    b.textContent = it === 'Tous' ? it : it + ' · ' + (counts[it] || 0);
+    b.setAttribute('aria-pressed', it === cur);
+    b.addEventListener('click', () => onPick(it));
+    box.appendChild(b);
+  }
+}
+function saveToLibrary(title, text, meta){
+  let t = LIB.user.find(x => x.title.toLowerCase() === title.toLowerCase());
+  if(t) Object.assign(t, {tab: text}, meta);
+  else { t = Object.assign({id: 'u-' + Date.now().toString(36), title, tab: text}, meta); LIB.user.push(t); }
+  saveLib(); return t;
+}
+function fillSelect(sel, items, cur){
+  sel.innerHTML = '';
+  for(const [v, label] of items){ const o = document.createElement('option'); o.value = v; o.textContent = label; sel.appendChild(o); }
+  sel.value = String(cur);
+}
+const TUNING_ITEMS = [['standard', 'Standard (E A D G B E)'], ['dropd', 'Drop D'], ['halfdown', 'Un demi-ton plus bas'], ['dropc', 'Drop C']];
+fillSelect($('#saveStyle'), STYLES.map(s => [s, s]), 'Autre');
+
+// ---------- Vues ----------
+const VIEWS = ['jouer', 'creer', 'tuto', 'reglages'];
+function showView(v){
+  if(!VIEWS.includes(v)) v = 'jouer';
+  S.view = v;
+  document.querySelectorAll('.view').forEach(el => { el.hidden = el.dataset.view !== v; });
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.go === v));
+  if(v !== 'jouer' && G.playing){ G.playing = false; updatePlayBtn(); }
+  stopSynth();
+  if(v === 'creer') renderEditor();
+  if(v === 'tuto') renderTuto();
+  save();
+}
+document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => { showView(b.dataset.go); window.scrollTo(0, 0); }));
+$('#loadBtn').addEventListener('click', () => { if($('#parseInfo').classList.contains('ok')) showView('jouer'); });
+function setEdMode(m){
+  S.edMode = m === 'texte' ? 'texte' : 'visuel';
+  $('#edVisual').hidden = S.edMode !== 'visuel'; $('#edTextPanel').hidden = S.edMode !== 'texte';
+  document.querySelectorAll('#edModes button').forEach(b => { const on = b.dataset.mode === S.edMode; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  stopSynth(); save();
+}
+document.querySelectorAll('#edModes button').forEach(b => b.addEventListener('click', () => setEdMode(b.dataset.mode)));
+
+// ---------- Éditeur visuel ----------
+const ED = {title: '', style: 'Metal', bpm: 90, cpb: 4, tuning: 'standard', measures: 4, cells: {}, sel: {s: 5, c: 0}, adv: 1};
+try { const d = JSON.parse(localStorage.getItem('tablive-editor') || 'null'); if(d && d.cells && d.measures) Object.assign(ED, d); } catch(e){}
+if(!TUNINGS[ED.tuning]) ED.tuning = 'standard';
+const saveEd = () => { try { localStorage.setItem('tablive-editor', JSON.stringify(ED)); } catch(e){} };
+const edSpm = () => ED.cpb * 4, edTotal = () => ED.measures * ED.cpb * 4;
+const edMsg = (txt, kind) => { const m = $('#edMsg'); m.textContent = txt; m.className = 'note' + (kind ? ' ' + kind : ''); };
+fillSelect($('#edStyle'), STYLES.map(s => [s, s]), ED.style);
+fillSelect($('#edTuning'), TUNING_ITEMS, ED.tuning);
+fillSelect($('#edAdv'), [[0, 'rester sur place'], [1, '1 case'], [2, '2 cases'], [4, '4 cases']], ED.adv);
+(() => {
+  const pad = $('#edPad');
+  for(let f = 0; f <= 24; f++){ const b = document.createElement('button'); b.textContent = f; b.dataset.f = f; pad.appendChild(b); }
+  for(const [act, label, aria] of [['clear', '⌫', 'Effacer la case'], ['left', '◀', 'Case précédente'], ['right', '▶', 'Case suivante'], ['up', '▲', 'Corde du dessus'], ['down', '▼', 'Corde du dessous']]){
+    const b = document.createElement('button'); b.textContent = label; b.dataset.act = act; b.setAttribute('aria-label', aria); b.className = 'ctl'; pad.appendChild(b);
+  }
+})();
+function renderEditor(){
+  $('#edTitle').value = ED.title; $('#edStyle').value = ED.style; $('#edTuning').value = ED.tuning;
+  $('#edBpm').value = ED.bpm; $('#edCpb').value = String(ED.cpb); $('#edAdv').value = String(ED.adv);
+  const n = edSpm(), wrap = $('#edGrid'), tun = TUNINGS[ED.tuning];
+  wrap.style.setProperty('--spm', n); wrap.style.setProperty('--cw', n > 16 ? '24px' : '30px');
+  let h = '<div class="edrow"><div class="edlabels"><span></span>' + tun.map((m, i) => `<span style="color:var(--s${i + 1})">${NAMES_EN[m % 12]}</span>`).join('') + '</div>';
+  for(let m = 0; m < ED.measures; m++){
+    h += '<div class="edm">';
+    for(let i = 0; i < n; i++) h += `<span class="eh" data-c="${m * n + i}">${i === 0 ? m + 1 : (i % ED.cpb === 0 ? '·' : '')}</span>`;
+    for(let s = 0; s < 6; s++) for(let i = 0; i < n; i++){
+      const c = m * n + i, v = ED.cells[ckey(s, c)];
+      h += `<button class="ec r${s}${i % ED.cpb === 0 ? ' beat' : ''}" data-s="${s}" data-c="${c}" tabindex="-1">${v != null ? `<b>${v}</b>` : ''}</button>`;
+    }
+    h += '</div>';
+  }
+  wrap.innerHTML = h + '</div>';
+  if(ED.sel.c >= edTotal()) ED.sel.c = edTotal() - 1;
+  markSel(false); edInfo();
+}
+const edCell = (s, c) => $('#edGrid').querySelector(`.ec[data-s="${s}"][data-c="${c}"]`);
+function markSel(scroll = true){
+  const old = $('#edGrid').querySelector('.ec.sel'); if(old) old.classList.remove('sel');
+  const el = edCell(ED.sel.s, ED.sel.c);
+  if(el){ el.classList.add('sel'); if(scroll) el.scrollIntoView({block: 'nearest', inline: 'nearest'}); }
+}
+function edInfo(){
+  const count = Object.keys(ED.cells).filter(k => +k.split(',')[1] < edTotal()).length;
+  let txt = `${count} note${count > 1 ? 's' : ''} · ${ED.measures} mesure${ED.measures > 1 ? 's' : ''}`;
+  if(count > 1){ const g = gridToText(ED), d = analyzeDifficulty(parseTab(g.text), ED.bpm, g.cpb); if(d) txt += ` · Difficulté ${d.score}/10 · ${d.level[1]}`; }
+  $('#edInfo').textContent = txt;
+}
+function setCell(v){
+  const k = ckey(ED.sel.s, ED.sel.c), el = edCell(ED.sel.s, ED.sel.c);
+  if(v == null) delete ED.cells[k]; else ED.cells[k] = v;
+  if(el) el.innerHTML = v != null ? `<b>${v}</b>` : '';
+  saveEd(); edInfo();
+}
+function moveSel(ds, dc){
+  ED.sel.s = Math.max(0, Math.min(5, ED.sel.s + ds));
+  ED.sel.c = Math.max(0, Math.min(edTotal() - 1, ED.sel.c + dc));
+  markSel();
+}
+$('#edGrid').addEventListener('click', e => {
+  const b = e.target.closest('.ec'); if(!b) return;
+  ED.sel = {s: +b.dataset.s, c: +b.dataset.c}; markSel(false);
+});
+$('#edPad').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.f != null){ setCell(+b.dataset.f); if(ED.adv) moveSel(0, ED.adv); return; }
+  const a = b.dataset.act;
+  if(a === 'clear') setCell(null); else if(a === 'left') moveSel(0, -1); else if(a === 'right') moveSel(0, 1); else if(a === 'up') moveSel(-1, 0); else if(a === 'down') moveSel(1, 0);
+});
+let lastDigit = {t: 0, k: ''};
+document.addEventListener('keydown', e => {
+  if(S.view !== 'creer' || S.edMode === 'texte' || !$('#skinSheet').hidden) return;
+  const tg = e.target.tagName; if(tg === 'TEXTAREA' || tg === 'INPUT' || tg === 'SELECT') return;
+  if(e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = ckey(ED.sel.s, ED.sel.c);
+  if(e.key >= '0' && e.key <= '9'){
+    const now = performance.now(), prev = ED.cells[k];
+    const combo = (lastDigit.k === k && now - lastDigit.t < 900 && prev != null && prev < 10) ? prev * 10 + +e.key : null;
+    setCell(combo != null && combo <= 24 ? combo : +e.key);
+    lastDigit = {t: now, k}; e.preventDefault(); return;
+  }
+  const mv = {ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0], ' ': [0, 1], Enter: [0, ED.cpb]}[e.key];
+  if(mv){ if(tg === 'BUTTON' && (e.key === ' ' || e.key === 'Enter')) return; moveSel(mv[0], mv[1]); e.preventDefault(); }
+  else if(e.key === 'Backspace' || e.key === 'Delete'){ setCell(null); if(e.key === 'Backspace') moveSel(0, -1); e.preventDefault(); }
+});
+$('#edTitle').addEventListener('input', e => { ED.title = e.target.value; saveEd(); });
+$('#edStyle').addEventListener('change', e => { ED.style = e.target.value; saveEd(); });
+$('#edAdv').addEventListener('change', e => { ED.adv = +e.target.value; saveEd(); });
+$('#edTuning').addEventListener('change', e => { ED.tuning = e.target.value; saveEd(); renderEditor(); });
+$('#edBpm').addEventListener('change', e => { ED.bpm = Math.max(40, Math.min(220, Math.round(+e.target.value) || 90)); e.target.value = ED.bpm; saveEd(); edInfo(); });
+$('#edCpb').addEventListener('change', e => {
+  const nv = +e.target.value, old = ED.cpb, cells = {};
+  for(const k in ED.cells){
+    const [s, c] = k.split(',').map(Number), nc = c * nv / old;
+    if(!Number.isInteger(nc)){ e.target.value = String(old); edMsg('Impossible de passer à cette précision : des notes tomberaient entre deux cases.', 'err'); return; }
+    cells[ckey(s, nc)] = ED.cells[k];
+  }
+  ED.cells = cells; ED.cpb = nv; ED.sel.c = Math.floor(ED.sel.c * nv / old); saveEd(); renderEditor(); edMsg('');
+});
+$('#edAdd').addEventListener('click', () => { if(ED.measures >= 32){ edMsg('32 mesures maximum dans l\'éditeur.', 'err'); return; } ED.measures++; saveEd(); renderEditor(); });
+$('#edDup').addEventListener('click', () => {
+  if(ED.measures >= 32){ edMsg('32 mesures maximum dans l\'éditeur.', 'err'); return; }
+  const n = edSpm(), from = (ED.measures - 1) * n;
+  for(let s = 0; s < 6; s++) for(let i = 0; i < n; i++){ const v = ED.cells[ckey(s, from + i)]; if(v != null) ED.cells[ckey(s, from + n + i)] = v; }
+  ED.measures++; saveEd(); renderEditor();
+});
+$('#edDel').addEventListener('click', () => {
+  if(ED.measures <= 1) return;
+  const lim = (ED.measures - 1) * edSpm();
+  for(const k of Object.keys(ED.cells)) if(+k.split(',')[1] >= lim) delete ED.cells[k];
+  ED.measures--; saveEd(); renderEditor();
+});
+$('#edClear').addEventListener('click', () => { if(!Object.keys(ED.cells).length || confirm('Effacer toutes les notes de l\'éditeur ?')){ ED.cells = {}; ED.measures = 4; ED.sel = {s: 5, c: 0}; saveEd(); renderEditor(); edMsg(''); } });
+$('#edFromGame').addEventListener('click', () => {
+  if(Object.keys(ED.cells).length && !confirm('Remplacer le contenu de l\'éditeur par le morceau en cours ?')) return;
+  const g = textToGrid($('#tab').value, S.cpb), cur = allTabs().find(x => x.id === LIB.currentId);
+  if(!g.count){ edMsg('Aucun morceau chargé à reprendre.', 'err'); return; }
+  Object.assign(ED, {cells: g.cells, measures: g.measures, cpb: S.cpb, bpm: S.bpm, tuning: S.tuning, sel: {s: 5, c: 0}});
+  if(cur){ ED.title = cur.id.startsWith('u-') ? cur.title : cur.title + ' (ma version)'; ED.style = styleOf(cur); }
+  saveEd(); renderEditor();
+  edMsg(g.cut ? `Morceau repris, mais coupé à 32 mesures (${g.cut} notes laissées de côté).` : 'Morceau repris dans l\'éditeur.', g.cut ? 'err' : 'ok');
+});
+$('#edListen').addEventListener('click', e => {
+  if(SY.on){ stopSynth(); return; }
+  const tun = TUNINGS[ED.tuning], spc = 60 / (ED.bpm * ED.cpb), total = edTotal(), list = [];
+  for(const k in ED.cells){ const [s, c] = k.split(',').map(Number); if(c < total) list.push({t: c * spc, midi: tun[s] + ED.cells[k]}); }
+  if(!list.length){ edMsg('Ajoute au moins une note pour écouter.', 'err'); return; }
+  let last = -1;
+  const mark = c => { const o = $('#edGrid').querySelector('.eh.on'); if(o) o.classList.remove('on'); if(c >= 0){ const el = $('#edGrid').querySelector(`.eh[data-c="${c}"]`); if(el){ el.classList.add('on'); if(c % edSpm() === 0) el.scrollIntoView({block: 'nearest', inline: 'start'}); } } };
+  playSynth(list, total * spc, t => { const c = Math.floor(t / spc); if(c !== last){ last = c; mark(c); } }, () => mark(-1), e.currentTarget);
+});
+function edToGame(){
+  const g = gridToText(ED);
+  if(!parseTab(g.text).events.length){ edMsg('Ajoute au moins une note.', 'err'); return null; }
+  $('#tab').value = g.text; S.bpm = ED.bpm; S.cpb = g.cpb; S.tuning = ED.tuning; syncControls(); applyTuning();
+  return g;
+}
+$('#edPlay').addEventListener('click', () => {
+  if(!edToGame()) return;
+  G.playing = false; loadTab(); showView('jouer'); window.scrollTo(0, 0);
+  showOverlay(ED.title.trim() || 'Ton morceau', $('#parseInfo').textContent + `. Tempo ${ED.bpm} BPM, accordage ${TUNING_SHORT[ED.tuning]}.`, 'Jouer');
+});
+$('#edSave').addEventListener('click', () => {
+  const title = ED.title.trim();
+  if(!title){ edMsg('Donne un nom au morceau avant de l\'enregistrer.', 'err'); $('#edTitle').focus(); return; }
+  const g = edToGame(); if(!g) return;
+  saveToLibrary(title, g.text, {bpm: ED.bpm, cpb: g.cpb, tuning: ED.tuning, style: ED.style});
+  loadTab(); edMsg(`« ${title} » est enregistré dans la bibliothèque, style ${ED.style}.`, 'ok');
+});
+
+// ---------- Tutoriel : gammes et positions ----------
+const SCALES = [
+  {id: 'pentamin', name: 'Pentatonique mineure', iv: [0, 3, 5, 7, 10], desc: 'La première gamme à apprendre : la base du rock, du blues et de la plupart des solos metal.'},
+  {id: 'blues', name: 'Blues', iv: [0, 3, 5, 6, 7, 10], desc: 'La pentatonique mineure avec une note en plus, la « blue note », qui donne la tension.'},
+  {id: 'mineur', name: 'Mineure naturelle', iv: [0, 2, 3, 5, 7, 8, 10], desc: 'Sombre et mélodique : la gamme du heavy et du death mélodique.'},
+  {id: 'phrygien', name: 'Phrygien', iv: [0, 1, 3, 5, 7, 8, 10], desc: 'Très sombre, avec sa deuxième note collée à la tonique : typique des riffs metal.'},
+  {id: 'harmo', name: 'Mineure harmonique', iv: [0, 2, 3, 5, 7, 8, 11], desc: 'Couleur néoclassique et orientale, avec un grand écart entre deux notes.'},
+  {id: 'pentamaj', name: 'Pentatonique majeure', iv: [0, 2, 4, 7, 9], desc: 'Lumineuse et simple : country, rock sudiste, mélodies joyeuses.'},
+  {id: 'majeur', name: 'Majeure', iv: [0, 2, 4, 5, 7, 9, 11], desc: 'Do ré mi fa sol la si : la gamme de référence de toute la théorie.'},
+];
+const FINGERS = ['corde à vide', 'index', 'majeur', 'annulaire', 'auriculaire'];
+const pcOf = m => ((m % 12) + 12) % 12;
+const TUTO = {pos: null, order: []};
+function scalePosition(rootPc, iv, k, tun){
+  const inScale = m => iv.includes(pcOf(m - rootPc));
+  let f0 = pcOf(rootPc - tun[5]) + iv[k]; if(f0 > 11) f0 -= 12;
+  const need = iv.length >= 7 ? 3 : 2, notes = [];
+  for(let s = 0; s < 6; s++){
+    const fr = [];
+    for(let f = f0; f <= f0 + 3; f++) if(inScale(tun[s] + f)) fr.push(f);
+    for(const f of [f0 - 1, f0 + 4]) if(fr.length < need && f >= 0 && inScale(tun[s] + f)) fr.push(f);
+    fr.sort((a, b) => a - b);
+    for(const f of fr) notes.push({s, f, midi: tun[s] + f, root: pcOf(tun[s] + f - rootPc) === 0, finger: f0 === 0 ? Math.min(4, f) : Math.max(1, Math.min(4, f - f0 + 1))});
+  }
+  return {f0, notes};
+}
+function boardSvg(P, tun){
+  const fmin = Math.min(...P.notes.map(n => n.f)), fmax = Math.max(...P.notes.map(n => n.f));
+  const a = Math.max(1, Math.min(P.f0, fmin)), b = Math.max(P.f0 + 3, fmax, a + 3) + 1, nf = b - a + 1, fw = 64, x0 = 58, top = 22, gap = 34;
+  const W = x0 + nf * fw + 16, H = top + 5 * gap + 44, hasOpen = P.notes.some(n => n.f === 0);
+  const y = s => top + (S.flip ? 5 - s : s) * gap, xc = f => f === 0 ? x0 - 24 : x0 + (f - a + 0.5) * fw;
+  let h = `<svg class="fb" viewBox="0 0 ${W} ${H}" role="img" aria-label="Schéma du manche">`;
+  const w0 = Math.max(a, P.f0 || 1), w1 = Math.min(b, (P.f0 || 1) + 3);
+  h += `<rect class="win" x="${x0 + (w0 - a) * fw}" y="${top - 14}" width="${(w1 - w0 + 1) * fw}" height="${5 * gap + 28}" rx="6"/>`;
+  for(const f of [3, 5, 7, 9, 12, 15, 17]) if(f >= a && f <= b) h += f === 12 ? `<circle class="inlay" cx="${xc(f)}" cy="${top + 1.5 * gap}" r="5"/><circle class="inlay" cx="${xc(f)}" cy="${top + 3.5 * gap}" r="5"/>` : `<circle class="inlay" cx="${xc(f)}" cy="${top + 2.5 * gap}" r="5"/>`;
+  for(let j = 0; j <= nf; j++) h += `<line class="${j === 0 && a === 1 ? 'nut' : 'fret'}" x1="${x0 + j * fw}" y1="${top}" x2="${x0 + j * fw}" y2="${top + 5 * gap}"/>`;
+  for(let s = 0; s < 6; s++){
+    h += `<line class="str" style="stroke:var(--s${s + 1});stroke-width:${1 + s * 0.4}" x1="${x0}" y1="${y(s)}" x2="${x0 + nf * fw}" y2="${y(s)}"/>`;
+    h += `<text class="sname" style="fill:var(--s${s + 1})" x="${hasOpen ? 8 : 26}" y="${y(s) + 5}">${NAMES_EN[tun[s] % 12]}</text>`;
+  }
+  for(let f = a; f <= b; f++) h += `<text class="fnum${f >= w0 && f <= w1 ? ' in' : ''}" x="${xc(f)}" y="${top + 5 * gap + 30}">${f}</text>`;
+  TUTO.order.forEach((n, i) => {
+    h += `<g class="dot${n.root ? ' root' : ''}" data-i="${i}"><circle cx="${xc(n.f)}" cy="${y(n.s)}" r="13"/><text x="${xc(n.f)}" y="${y(n.s) + 5}">${n.finger}</text></g>`;
+  });
+  return h + '</svg>';
+}
+function renderTuto(){
+  const sc = SCALES.find(x => x.id === S.tScale) || SCALES[0], root = S.tRoot ?? 9, tun = TUNINGS[S.tuning];
+  if(!((S.tPos || 0) < sc.iv.length)) S.tPos = 0;
+  const k = S.tPos || 0, P = scalePosition(root, sc.iv, k, tun);
+  TUTO.pos = P; TUTO.order = [...P.notes].sort((x, y) => y.s - x.s || x.f - y.f);
+  $('#tRoot').value = String(root); $('#tScale').value = sc.id;
+  const box = $('#tPos'); box.innerHTML = '<span class="lbl">Position</span>';
+  sc.iv.forEach((_, i) => {
+    const b = document.createElement('button'); b.className = 'chip' + (i === k ? ' on' : ''); b.textContent = i + 1; b.setAttribute('aria-pressed', i === k);
+    b.setAttribute('aria-label', 'Position ' + (i + 1));
+    b.addEventListener('click', () => { S.tPos = i; save(); stopSynth(); renderTuto(); });
+    box.appendChild(b);
+  });
+  $('#tDesc').textContent = `${NAMES_FR[root]} ${sc.name.toLowerCase()} : ${sc.iv.map(i => NAMES_FR[(root + i) % 12]).join(' · ')}. ${sc.desc}`;
+  $('#tBoard').innerHTML = boardSvg(P, tun);
+  const f0 = P.f0, strs = f => [...new Set(P.notes.filter(n => n.f === f).map(n => NAMES_EN[tun[n.s] % 12]))];
+  let t = f0 === 0
+    ? 'Position ouverte, tout en haut du manche : index case 1, majeur case 2, annulaire case 3, auriculaire case 4. Les « 0 » sont des cordes jouées à vide.'
+    : `Position ${k + 1} : pose l'index sur la case ${f0}, puis un doigt par case. Majeur case ${f0 + 1}, annulaire case ${f0 + 2}, auriculaire case ${f0 + 3}.`;
+  const on = l => l.length > 1 ? `Sur les cordes ${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : `Sur la corde ${l[0]}`;
+  if(f0 > 0 && strs(f0 - 1).length) t += ` ${on(strs(f0 - 1))}, l'index recule d'une case (case ${f0 - 1}).`;
+  if(f0 > 0 && strs(f0 + 4).length) t += ` ${on(strs(f0 + 4))}, l'auriculaire s'étire jusqu'à la case ${f0 + 4}.`;
+  t += ` Les ronds pleins sont la tonique (${NAMES_FR[root]}). Accordage : ${TUNING_SHORT[S.tuning]}.`;
+  $('#tHand').textContent = t;
+}
+const tutoSeq = () => { const o = TUTO.order; return [...o.map((n, i) => ({n, i})), ...o.map((n, i) => ({n, i})).slice(0, -1).reverse()]; };
+fillSelect($('#tRoot'), [4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3].map(pc => [pc, `${NAMES_FR[pc]} (${NAMES_EN[pc]})`]), S.tRoot ?? 9);
+fillSelect($('#tScale'), SCALES.map(s => [s.id, s.name]), S.tScale || 'pentamin');
+$('#tRoot').addEventListener('change', e => { S.tRoot = +e.target.value; save(); stopSynth(); renderTuto(); });
+$('#tScale').addEventListener('change', e => { S.tScale = e.target.value; S.tPos = 0; save(); stopSynth(); renderTuto(); });
+$('#tListen').addEventListener('click', e => {
+  if(SY.on){ stopSynth(); return; }
+  const seq = tutoSeq(), stepT = 0.32; let last = -1;
+  const mark = i => { const o = $('#tBoard').querySelector('.dot.on'); if(o) o.classList.remove('on'); if(i >= 0){ const el = $('#tBoard').querySelector(`.dot[data-i="${i}"]`); if(el) el.classList.add('on'); } };
+  playSynth(seq.map((x, j) => ({t: j * stepT, midi: x.n.midi})), seq.length * stepT + 0.3, t => { const j = Math.min(seq.length - 1, Math.floor(t / stepT)); if(j !== last){ last = j; mark(seq[j].i); } }, () => mark(-1), e.currentTarget);
+});
+$('#tTrain').addEventListener('click', () => {
+  const seq = tutoSeq(), cells = {}, sc = SCALES.find(x => x.id === S.tScale) || SCALES[0];
+  seq.forEach((x, j) => { cells[ckey(x.n.s, j * 2)] = x.n.f; });
+  const g = gridToText({cpb: 4, measures: Math.ceil(seq.length * 2 / 16), cells});
+  $('#tab').value = g.text; S.bpm = 70; S.cpb = g.cpb; syncControls(); applyTuning();
+  G.playing = false; loadTab(); showView('jouer'); window.scrollTo(0, 0);
+  showOverlay(`${NAMES_FR[S.tRoot ?? 9]} ${sc.name.toLowerCase()} · position ${(S.tPos || 0) + 1}`, 'Monte la gamme puis redescends, une note à la fois. Active le mode attente dans les réglages pour prendre ton temps.', 'Jouer');
+});
+
+
 loadTab();
+setEdMode(S.edMode);
+showView(S.view);
 requestAnimationFrame(frame);
 if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
