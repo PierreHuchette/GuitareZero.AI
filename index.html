@@ -195,7 +195,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--panel-2);white-space:nowrap}
 /* ---------- Onglets, filtres, éditeur, tutoriel ---------- */
 .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line)}
 .tabs::-webkit-scrollbar{display:none}
-.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--muted);font:var(--display-weight) clamp(13px,3.7vw,19px)/1 var(--display);text-transform:var(--display-case);letter-spacing:var(--display-track);padding:12px 6px;white-space:nowrap;clip-path:none;flex:1 0 auto;text-align:center;min-height:44px}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--muted);font:var(--display-weight) clamp(12px,3.1vw,19px)/1 var(--display);text-transform:var(--display-case);letter-spacing:var(--display-track);padding:12px 4px;white-space:nowrap;clip-path:none;flex:1 0 auto;text-align:center;min-height:44px}
 .tabs button[aria-selected="true"]{color:var(--amber);border-bottom-color:var(--amber)}
 .view{display:flex;flex-direction:column;gap:14px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
@@ -244,6 +244,27 @@ td{padding:6px 8px;border-bottom:1px solid var(--panel-2);white-space:nowrap}
 .tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--muted);max-width:70ch}
 .tips b{color:var(--fg);font-weight:600}
 @media (pointer:coarse){.edwrap{--ch:36px}}
+
+/* Accordeur */
+.tustrings{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.tustrings button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px;border-bottom:4px solid var(--sc);clip-path:none;min-width:0}
+.tustrings button b{font:var(--display-weight) 22px/1 var(--display)}
+.tustrings button span{font:11px var(--mono);color:var(--muted)}
+.tustrings button.cur{background:color-mix(in srgb,var(--sc) 22%,var(--panel-2));border-color:var(--sc)}
+.tustrings button{position:relative}
+.tustrings button.done::after{content:"✓";position:absolute;top:3px;right:5px;color:var(--ok);font:600 13px var(--body)}
+.tudial{background:var(--well);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.tunote{font:var(--display-weight) clamp(72px,22vw,120px)/1 var(--display);font-variant-numeric:tabular-nums}
+.tunote.ok{color:var(--ok)}
+.tuscale{position:relative;width:100%;max-width:520px;height:34px;border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--bad) 30%,var(--sunk)),color-mix(in srgb,var(--ok) 34%,var(--sunk)) 46%,color-mix(in srgb,var(--ok) 34%,var(--sunk)) 54%,color-mix(in srgb,var(--bad) 30%,var(--sunk)))}
+.tuscale .mid{position:absolute;left:calc(50% - 1px);top:0;bottom:0;width:2px;background:var(--fg);opacity:.35}
+.tuscale b{position:absolute;top:-6px;width:6px;height:46px;border-radius:3px;background:var(--fg);left:calc(50% - 3px);transition:left .09s linear;opacity:.35}
+.tuscale b.live{opacity:1}
+.tuscale b.ok{background:var(--ok);box-shadow:0 0 14px var(--ok)}
+.tuends{display:flex;justify-content:space-between;width:100%;max-width:520px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tumsg{font-size:17px;font-weight:600;text-align:center;min-height:1.5em}
+.tumsg.ok{color:var(--ok)}
+@media (prefers-reduced-motion:reduce){.tuscale b{transition:none}}
 
 /* Sélecteur de thème */
 .sheet{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center}
@@ -320,6 +341,7 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
     <button data-go="jouer" aria-selected="true">Jouer</button>
     <button data-go="creer" aria-selected="false">Créer</button>
     <button data-go="tuto" aria-selected="false">Tutoriel</button>
+    <button data-go="accordeur" aria-selected="false">Accordeur</button>
     <button data-go="reglages" aria-selected="false">Réglages</button>
   </nav>
 
@@ -471,6 +493,26 @@ body.gamemode.rotated #game{inset:auto;top:0;left:100vw;width:100vh;width:100dvh
         <li><b>Aller-retour</b> : un coup vers le bas, un coup vers le haut, même à tempo lent. C'est ce qui permettra d'accélérer.</li>
         <li><b>Lentement et juste d'abord</b> : monte le tempo seulement quand chaque note sonne clairement.</li>
       </ul>
+    </section>
+  </div>
+
+  <div class="view" data-view="accordeur" hidden>
+    <section class="panel">
+      <h3>Accordeur</h3>
+      <div class="field"><label for="tuTuning">Accordage visé</label><select id="tuTuning"></select></div>
+      <div class="tustrings" id="tuStrings"></div>
+      <div class="tudial">
+        <div class="tunote" id="tuNote">–</div>
+        <div class="tuscale"><i class="mid"></i><b id="tuNeedle"></b></div>
+        <div class="tuends"><span>trop bas</span><span>juste</span><span>trop haut</span></div>
+        <div class="tumsg" id="tuMsg">Active le micro pour commencer.</div>
+        <div class="sub" id="tuFreq">&nbsp;</div>
+      </div>
+      <div class="row">
+        <button class="primary" id="tuConnect">Activer le micro / la guitare</button>
+        <button id="tuAuto" hidden>Revenir à la détection automatique</button>
+      </div>
+      <div class="note">Joue une corde à vide, une seule à la fois, et laisse-la sonner. L'accordeur reconnaît la corde tout seul. Touche une corde ci-dessus pour entendre sa note de référence et la viser, même si elle est très désaccordée.</div>
     </section>
   </div>
 
@@ -1381,6 +1423,7 @@ function frame(t){
   const now = t / 1000, dt = Math.min(0.1, (t - last) / 1000); last = t;
   analyze(now);
   if(G.playing) step(dt, now);
+  if(S.view === 'accordeur') tunerHud(now);
   draw(now); hud(now);
   requestAnimationFrame(frame);
 }
@@ -1781,7 +1824,7 @@ const TUNING_ITEMS = [['standard', 'Standard (E A D G B E)'], ['dropd', 'Drop D'
 fillSelect($('#saveStyle'), STYLES.map(s => [s, s]), 'Autre');
 
 // ---------- Vues ----------
-const VIEWS = ['jouer', 'creer', 'tuto', 'reglages'];
+const VIEWS = ['jouer', 'creer', 'tuto', 'accordeur', 'reglages'];
 function showView(v){
   if(!VIEWS.includes(v)) v = 'jouer';
   S.view = v;
@@ -1791,6 +1834,8 @@ function showView(v){
   stopSynth();
   if(v === 'creer') renderEditor();
   if(v === 'tuto') renderTuto();
+  if(v === 'accordeur') renderTuner();
+  keepAwake(v === 'accordeur' || G.playing);
   save();
 }
 document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => { showView(b.dataset.go); window.scrollTo(0, 0); }));
@@ -2044,6 +2089,59 @@ $('#tTrain').addEventListener('click', () => {
   showOverlay(`${NAMES_FR[S.tRoot ?? 9]} ${sc.name.toLowerCase()} · position ${(S.tPos || 0) + 1}`, 'Monte la gamme puis redescends, une note à la fois. Active le mode attente dans les réglages pour prendre ton temps.', 'Jouer');
 });
 
+
+// ---------- Accordeur ----------
+const TU = {manual: null, ema: null, okSince: 0, done: new Set(), lastDom: 0, cur: -1};
+fillSelect($('#tuTuning'), TUNING_ITEMS, S.tuning);
+function renderTuner(){
+  const tun = TUNINGS[S.tuning], box = $('#tuStrings'); box.innerHTML = '';
+  $('#tuTuning').value = S.tuning;
+  for(let s = 5; s >= 0; s--){
+    const b = document.createElement('button'); b.dataset.s = s; b.style.setProperty('--sc', `var(--s${s + 1})`);
+    b.innerHTML = `<b>${NAMES_FR[tun[s] % 12]}</b><span>${nameEn(tun[s])}</span>`;
+    b.setAttribute('aria-label', `Corde ${s + 1}, ${NAMES_FR[tun[s] % 12]} : écouter et viser cette note`);
+    if(TU.done.has(s)) b.classList.add('done');
+    b.addEventListener('click', () => { TU.manual = s; TU.ema = null; $('#tuAuto').hidden = false; playSynth([{t: 0, midi: tun[s]}, {t: 0.9, midi: tun[s]}], 1.9); markTunerString(s); });
+    box.appendChild(b);
+  }
+  $('#tuAuto').hidden = TU.manual == null; TU.cur = -1; if(TU.manual != null) markTunerString(TU.manual);
+}
+function markTunerString(s){
+  if(TU.cur === s) return; TU.cur = s;
+  document.querySelectorAll('#tuStrings button').forEach(b => b.classList.toggle('cur', +b.dataset.s === s));
+}
+$('#tuTuning').addEventListener('change', e => { S.tuning = e.target.value; syncControls(); applyTuning(); TU.done.clear(); TU.manual = null; TU.ema = null; save(); renderTuner(); });
+$('#tuAuto').addEventListener('click', () => { TU.manual = null; TU.ema = null; $('#tuAuto').hidden = true; markTunerString(-1); });
+$('#tuConnect').addEventListener('click', doConnect);
+function tunerHud(now){
+  if(now - TU.lastDom < 0.05) return; TU.lastDom = now;
+  const tun = TUNINGS[S.tuning], note = $('#tuNote'), needle = $('#tuNeedle'), msg = $('#tuMsg');
+  $('#tuConnect').hidden = !!A.src;
+  const live = !SY.on && now - D.shownAt < 0.35 && D.midi != null;
+  if(!live){
+    if(now - D.shownAt > 1){
+      TU.ema = null; TU.okSince = 0; needle.className = ''; needle.style.left = 'calc(50% - 3px)';
+      note.className = 'tunote'; note.textContent = TU.manual != null ? NAMES_FR[tun[TU.manual] % 12] : '–';
+      msg.className = 'tumsg'; msg.textContent = A.src ? 'Joue une corde à vide.' : 'Active le micro pour commencer.'; $('#tuFreq').innerHTML = '&nbsp;';
+    }
+    return;
+  }
+  const pitch = D.midi + D.cents / 100;
+  let s = TU.manual;
+  if(s == null){ let bd = 99; for(let i = 0; i < 6; i++){ const d = Math.abs(pitch - tun[i]); if(d < bd){ bd = d; s = i; } } }
+  const dev = (pitch - tun[s]) * 100;
+  TU.ema = TU.ema == null || Math.abs(dev - TU.ema) > 60 ? dev : TU.ema * 0.65 + dev * 0.35;
+  const c = TU.ema, ok = Math.abs(c) < 5, n = Math.round(Math.abs(c));
+  markTunerString(s);
+  note.textContent = NAMES_FR[tun[s] % 12]; note.className = 'tunote' + (ok ? ' ok' : '');
+  needle.className = 'live' + (ok ? ' ok' : ''); needle.style.left = `calc(${50 + Math.max(-50, Math.min(50, c))}% - 3px)`;
+  msg.className = 'tumsg' + (ok ? ' ok' : '');
+  msg.textContent = ok ? 'Juste !' : n > 250 ? (c < 0 ? 'Beaucoup trop bas : tends la corde' : 'Beaucoup trop haut : détends la corde')
+    : c < 0 ? `Trop bas de ${n} cents : tends la corde` : `Trop haut de ${n} cents : détends la corde`;
+  $('#tuFreq').textContent = `Entendu : ${nameFr(D.midi)} (${nameEn(D.midi)}) · ${D.freq.toFixed(1)} Hz · visé : ${(440 * Math.pow(2, (tun[s] - 69) / 12)).toFixed(1)} Hz`;
+  if(ok){ if(!TU.okSince) TU.okSince = now; if(now - TU.okSince > 0.6 && !TU.done.has(s)){ TU.done.add(s); const b = document.querySelector(`#tuStrings button[data-s="${s}"]`); if(b) b.classList.add('done'); } }
+  else TU.okSince = 0;
+}
 
 loadTab();
 setEdMode(S.edMode);
