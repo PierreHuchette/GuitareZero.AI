@@ -147,6 +147,17 @@ td{padding:6px 8px;border-bottom:1px solid var(--panel-2);white-space:nowrap}
   --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
 }
+[data-skin="partition"]{
+  --tolex:#eef0f3; --panel:#ffffff; --panel-2:#e4e8ee; --line:#c9d0da;
+  --fg:#1b2230; --muted:#5d6878; --amber:#2a55d4; --ok:#14804a; --bad:#c62d3a;
+  --s1:#7b4fd6; --s2:#0f8a6c; --s3:#c46a00; --s4:#1f6fd1; --s5:#a88400; --s6:#d0304a;
+  --well:#f7f8fa; --sunk:#dde2e9; --on-accent:#ffffff; --gem-text:#ffffff; --miss:#b3bcc8;
+  --texture:repeating-linear-gradient(0deg,transparent 0 27px,rgba(27,34,48,.045) 27px 28px);
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif; --display-weight:800; --display-case:uppercase; --display-track:.04em;
+  --radius:10px; --fx:none; --mode:light;
+  color-scheme:light;
+}
+[data-skin="partition"] .panel,[data-skin="partition"] .box,[data-skin="partition"] .stage{box-shadow:0 1px 2px rgba(27,34,48,.06),0 4px 14px rgba(27,34,48,.05)}
 [data-skin="enfer"]{
   --tolex:#0b0606; --panel:#170c0b; --panel-2:#24110f; --line:#43201a;
   --fg:#f1e3d3; --muted:#b08d7e; --amber:#ff5a1f; --ok:#f0c25a; --bad:#d4163a;
@@ -570,7 +581,7 @@ function readTheme(){
   const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
   STRING_COLORS = ['--s1','--s2','--s3','--s4','--s5','--s6'].map(v);
   Object.assign(T, {accent: v('--amber'), ok: v('--ok'), bad: v('--bad'), fg: v('--fg'), gemText: v('--gem-text'), miss: v('--miss'),
-    well: v('--well'), fx: v('--fx') || 'none', display: v('--display'), body: v('--body'), mono: v('--mono'), dw: v('--display-weight') || '800'});
+    well: v('--well'), fx: v('--fx') || 'none', light: v('--mode') === 'light', display: v('--display'), body: v('--body'), mono: v('--mono'), dw: v('--display-weight') || '800'});
   T.scan = null;
 }
 readTheme();
@@ -972,7 +983,7 @@ function drawCombo(now, w, h){
 function drawStars(now, w, h){
   const dt = Math.min(0.05, now - (SP.last || now)); SP.last = now;
   if(SP.list.length){
-    cx.save(); cx.globalCompositeOperation = 'lighter'; cx.lineCap = 'round';
+    cx.save(); cx.globalCompositeOperation = T.light ? 'source-over' : 'lighter'; cx.lineCap = 'round';
     SP.list = SP.list.filter(p => p.age < p.life && p.y < h + 40);
     for(const p of SP.list){
       p.age += dt; if(p.age < 0) continue;
@@ -1434,6 +1445,7 @@ const SKINS = [
   {id:'enfer', name:'Enfer', desc:'Braises qui montent, rouge sang et os. Pour les riffs les plus sombres.'},
   {id:'neoretro', name:'Néo-rétro', desc:'Soleil couchant, grille au néon et couleurs synthwave.'},
   {id:'cyberpunk', name:'Cyberpunk', desc:'Jaune néon, angles coupés, lignes de balayage et parasites.'},
+  {id:'partition', name:'Partition', desc:'Thème clair : papier blanc, encre bleue. Lisible en plein jour.'},
   {id:'ruines', name:'Terminal des ruines', desc:'Écran à phosphore vert d\'un abri oublié après la fin du monde.'},
 ];
 function applySkin(id, persist = true){
